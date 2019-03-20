@@ -17,7 +17,8 @@ MODULE qs_mo_occupation
                                               FermiFixedDeriv
    USE input_constants,                 ONLY: smear_energy_window,&
                                               smear_fermi_dirac,&
-                                              smear_list
+                                              smear_list, &
+                                              smear_singlet
    USE kahan_sum,                       ONLY: accurate_sum
    USE kinds,                           ONLY: dp
    USE qs_mo_types,                     ONLY: get_mo_set,&
@@ -220,6 +221,22 @@ CONTAINS
       END IF
       CPASSERT((SIZE(mo_array) == 2))
       mo_set_b => mo_array(2)%mo_set
+      
+      IF (smear%method == smear_singlet) THEN
+         IF (PRESENT(eval_deriv)) THEN
+            CALL set_mo_occupation_1(mo_set_a, smear=smear, eval_deriv=eval_deriv)
+         ELSE
+            CALL set_mo_occupation_1(mo_set_a, smear=smear)
+         END IF
+         smear%do_smear = .FALSE.
+         IF (PRESENT(eval_deriv)) THEN
+            CALL set_mo_occupation_1(mo_set_b, smear=smear, eval_deriv=eval_deriv)
+         ELSE
+            CALL set_mo_occupation_1(mo_set_b, smear=smear)
+         END IF
+         CALL timestop(handle)
+         RETURN
+      END IF
 
       IF (smear%do_smear) THEN
          IF (smear%fixed_mag_mom < 0.0_dp) THEN
@@ -568,6 +585,21 @@ CONTAINS
             ! most general case
             mo_set%lfomo = 1
             mo_set%homo = nmo
+         CASE (smear_singlet)
+            equal_size = nmo == nomo + 1
+            IF (.NOT. equal_size) THEN
+                CALL cp_warn(__LOCATION__, &
+                            "ADDED_MOS = 1 should be set.")
+                EXIT
+             END IF
+             mo_set%occupation_numbers(nomo) = 0.0_dp 
+             mo_set%occupation_numbers(nomo+1) = mo_set%maxocc
+             IF (PRESENT(eval_deriv)) THEN
+               eval_deriv = 0.0_dp
+             END IF
+             ! most general case
+             mo_set%lfomo = 1
+             mo_set%homo = nmo
          END SELECT
 
          ! Check, if the smearing involves more than one MO
