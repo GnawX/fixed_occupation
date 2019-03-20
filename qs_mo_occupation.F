@@ -234,6 +234,7 @@ CONTAINS
          ELSE
             CALL set_mo_occupation_1(mo_set_b, smear=smear)
          END IF
+         smear%do_smear = .TRUE.
          CALL timestop(handle)
          RETURN
       END IF
