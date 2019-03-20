@@ -83,7 +83,7 @@ MODULE input_cp2k_dft
         sccs_andreussi, sccs_derivative_cd3, sccs_derivative_cd5, sccs_derivative_cd7, &
         sccs_derivative_fft, sccs_fattebert_gygi, shape_function_density, shape_function_gaussian, &
         sic_ad, sic_eo, sic_list_all, sic_list_unpaired, sic_mauri_spz, sic_mauri_us, sic_none, &
-        slater, smear_energy_window, smear_fermi_dirac, smear_list, sparse_guess, &
+        slater, smear_energy_window, smear_fermi_dirac, smear_list, smear_singlet, sparse_guess, &
         spline3_nopbc_interp, spline3_pbc_interp, tddfpt_davidson, tddfpt_excitations, &
         tddfpt_lanczos, tddfpt_singlet, tddfpt_triplet, use_coulomb, use_diff, use_no, &
         use_restart_wfn, use_rt_restart, use_scf_wfn, wannier_projection, weight_type_mass, &
@@ -7833,11 +7833,12 @@ CONTAINS
                           description="Smearing method to be applied", &
                           usage="METHOD Fermi_Dirac", &
                           default_i_val=smear_energy_window, &
-                          enum_c_vals=s2a("FERMI_DIRAC", "ENERGY_WINDOW", "LIST"), &
-                          enum_i_vals=(/smear_fermi_dirac, smear_energy_window, smear_list/), &
+                          enum_c_vals=s2a("FERMI_DIRAC", "ENERGY_WINDOW", "LIST", "SINGLET"), &
+                          enum_i_vals=(/smear_fermi_dirac, smear_energy_window, smear_list, smear_singlet/), &
                           enum_desc=s2a("Fermi-Dirac distribution defined by the keyword ELECTRONIC_TEMPERATURE", &
                                         "Energy window defined by the keyword WINDOW_SIZE", &
-                                        "Use a fixed list of occupations"))
+                                        "Use a fixed list of occupations", &
+                                        "approximate singlet excited state for alpha spin"))
       CALL section_add_keyword(section, keyword)
       CALL keyword_release(keyword)
 
