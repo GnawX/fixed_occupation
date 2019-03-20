@@ -590,7 +590,6 @@ CONTAINS
             IF (.NOT. equal_size) THEN
                 CALL cp_warn(__LOCATION__, &
                             "ADDED_MOS = 1 should be set.")
-                EXIT
              END IF
              mo_set%occupation_numbers(nomo) = 0.0_dp 
              mo_set%occupation_numbers(nomo+1) = mo_set%maxocc
