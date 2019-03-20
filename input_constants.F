@@ -791,7 +791,8 @@ MODULE input_constants
    ! Define identifier codes for smearing method
    INTEGER, PARAMETER, PUBLIC               :: smear_energy_window = 1, &
                                                smear_fermi_dirac = 2, &
-                                               smear_list = 3
+                                               smear_list = 3, &
+                                               smear_singlet = 4
 
    ! Define identifier codes for mixing method
 
